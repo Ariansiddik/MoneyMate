@@ -1,0 +1,135 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>MoneyMate</title>
+<style>
+:root{--p:#FF995E;--bg:#FFF8F3;--c:#fff;--t:#292929;--m:#8a817b;--g:#22a06b;--r:#e5484d;--b:#3b82f6;--y:#f5b82e;--ln:#f0e4da;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#1b1714;--c:#27221e;--t:#f3ece6;--m:#a39a93;--ln:#3a332d;color-scheme:dark}}
+:root[data-theme=dark]{--bg:#1b1714;--c:#27221e;--t:#f3ece6;--m:#a39a93;--ln:#3a332d;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--t);font:15px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+#app{max-width:480px;margin:auto;padding:16px 16px 110px;animation:f .3s}@keyframes f{from{opacity:0;transform:translateY(8px)}}
+h1{font-size:30px;margin:4px 0}h2{margin:6px 0 12px;font-size:20px}small{color:var(--m)}
+.card{background:var(--c);border-radius:20px;padding:14px;margin:0 0 12px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+.hero{background:linear-gradient(135deg,#FF995E,#ff7a3d);color:#fff}.hero small{color:#ffe9dc}.hero b{display:block;font-size:16px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:8px}.three{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.three button{border:0;border-radius:16px;padding:12px 4px;background:var(--c);color:var(--t);font-weight:600;box-shadow:0 2px 10px rgba(0,0,0,.06)}.three span{display:block;font-size:24px}
+.row{display:flex;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--ln)}.row:last-child{border:0}.f{flex:1;min-width:0}.f small{display:block}
+.ic{width:40px;height:40px;border-radius:14px;background:var(--bg);display:grid;place-items:center;font-size:20px}
+.g{color:var(--g)}.r{color:var(--r)}.sp{display:flex;justify-content:space-between;gap:8px}
+label{display:block;font-size:13px;color:var(--m);margin-bottom:10px}
+input,select,textarea{width:100%;padding:11px;border-radius:12px;border:1px solid var(--ln);background:var(--bg);color:var(--t);font:inherit;margin-top:4px}
+.btn{width:100%;border:0;border-radius:14px;padding:13px;background:var(--p);color:#fff;font:600 16px inherit;margin-top:6px}.btn:disabled{opacity:.5}.del{background:var(--r)}.sm{width:auto;padding:9px 14px;font-size:14px}
+.tabs{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}.tabs button{flex:1;border:1px solid var(--ln);background:var(--c);color:var(--t);border-radius:12px;padding:9px 6px}.tabs .on{background:var(--p);color:#fff;border-color:var(--p)}
+.pb{height:10px;border-radius:9px;background:var(--ln);margin:8px 0 4px;overflow:hidden}.pb i{display:block;height:100%;transition:width .5s}
+.warn{background:#fff1e0;color:#a4510a;border-radius:12px;padding:8px 10px;margin:8px 0;font-size:13px}
+.chip{font-size:12px;padding:2px 9px;border-radius:9px;background:var(--bg);font-weight:600}
+nav{position:fixed;left:0;right:0;bottom:0;background:var(--c);display:flex;justify-content:space-around;align-items:flex-end;padding:8px 6px calc(8px + env(safe-area-inset-bottom,0px));box-shadow:0 -4px 16px rgba(0,0,0,.08);z-index:5;max-width:480px;margin:auto}
+nav button{flex:1;border:0;background:none;color:var(--m);font-size:11px}nav button span{display:block;font-size:21px}nav .on{color:var(--p);font-weight:700}
+nav .fab{flex:none;width:58px;height:58px;border-radius:50%;background:var(--p);color:#fff;font-size:32px;margin-top:-24px;box-shadow:0 6px 16px rgba(255,153,94,.5)}
+.chart{display:flex;gap:4px;height:130px;align-items:flex-end;overflow-x:auto;padding-top:6px}.bar{flex:0 0 26px;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;font-size:10px}.bar i{width:100%;background:var(--p);border-radius:6px 6px 0 0;min-height:2px}.bar s{text-decoration:none;color:var(--m)}
+svg.pie{width:170px;height:170px;display:block;margin:auto;transform:rotate(-90deg)}svg circle{cursor:pointer}
+.dot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:6px}
+.back{border:0;background:var(--c);color:var(--t);width:38px;height:38px;border-radius:12px;font-size:20px;box-shadow:0 2px 10px rgba(0,0,0,.06)}.chev{color:var(--m);font-size:24px}.day{font-size:12px;color:var(--m);margin:12px 0 2px;font-weight:600}.hd{display:flex;justify-content:space-between}
+</style></head><body><div id="app"></div><nav id="nv"></nav>
+<script>
+const CUR={BDT:'৳',USD:'$',EUR:'€',GBP:'£',INR:'₹',AUD:'A$',CAD:'C$',CNY:'CN¥',JPY:'¥',SAR:'SAR ',AED:'AED '};
+const EC=['Food','Shopping','Transportation','Education','Medical','Bills','Rent','Grocery','Entertainment','Social','Gifts','Other'],IC=['Salary','Freelancing','Business','Investment','Scholarship','Gift','Other'];
+const COL=['#FF995E','#3b82f6','#22a06b','#ec6fa5','#f5b82e','#8b5cf6','#14b8a6','#ef4444','#84cc16','#06b6d4','#f97316','#64748b'];
+const EMO={Food:'🍔',Shopping:'🛍️',Transportation:'🚌',Education:'📚',Medical:'💊',Bills:'🧾',Rent:'🏠',Grocery:'🛒',Entertainment:'🎬',Social:'👥',Gifts:'🎁',Salary:'💼',Freelancing:'💻',Business:'🏪',Investment:'📈',Scholarship:'🎓',Gift:'🎁'};
+const L={en:{home:'Home',stats:'Statistics',add:'Add',budget:'Budget',settings:'Settings',bal:'Total Balance',inc:'Income',exp:'Expense',loan:'Loan/Debt',recent:'Recent Transactions',all:'See all'},
+bn:{home:'হোম',stats:'পরিসংখ্যান',add:'যোগ',budget:'বাজেট',settings:'সেটিংস',bal:'মোট ব্যালেন্স',inc:'আয়',exp:'ব্যয়',loan:'ঋণ/দেনা',recent:'সাম্প্রতিক লেনদেন',all:'সব দেখুন'}};
+let S;try{S=JSON.parse(localStorage.getItem('smm'))}catch(e){}
+S=Object.assign({tx:[],loans:[],budget:{total:0,cats:{}},cur:'BDT',lang:'en',theme:'auto',name:'',cc:{expense:[],income:[]}},S||{});
+const save=()=>{try{localStorage.setItem('smm',JSON.stringify(S))}catch(e){}};
+const $=s=>document.querySelector(s),t=k=>L[S.lang][k]||k,pad=n=>String(n).padStart(2,'0'),uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fmt=n=>CUR[S.cur]+(+n).toLocaleString(undefined,{maximumFractionDigits:2});
+const dstr=n=>{const d=new Date();d.setDate(d.getDate()+n);return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())},today=()=>dstr(0);
+const nowT=()=>{const d=new Date();return pad(d.getHours())+':'+pad(d.getMinutes())};
+const sum=a=>a.reduce((s,x)=>s+x.amt,0),inc=()=>sum(S.tx.filter(x=>x.type=='income')),exp=()=>sum(S.tx.filter(x=>x.type=='expense'));
+const cats=ty=>(ty=='expense'?EC:IC).concat(S.cc[ty]||[]);
+const paid=l=>sum(l.pays),rem=l=>Math.max(0,l.amt-paid(l));
+const st=l=>rem(l)<=0?'Fully Paid':l.due&&l.due<today()?'Overdue':paid(l)>0?'Partially Paid':'Pending';
+let V='home',F={type:'expense'},H={},P='month',PF='',PT='',SK='expense',ENT=[],TOT=0,VIEWS={};
+function go(v,o){V=v;if(v=='settings')SS='';if(v=='add')F=o||{type:'expense'};if(v=='history')H={q:'',type:'',cat:'',date:'',sort:'new'};render();scrollTo(0,0)}
+function render(){document.documentElement.dataset.theme=S.theme;document.documentElement.lang=S.lang;$('#app').innerHTML=VIEWS[V]();
+const n=[['home','🏠'],['stats','📊'],['add','+'],['budget','👛'],['settings','⚙️']];
+$('#nv').innerHTML=n.map(([k,i])=>k=='add'?`<button class=fab onclick="go('add')">+</button>`:`<button class="${V==k?'on':''}" onclick="go('${k}')"><span>${i}</span>${t(k)}</button>`).join('');if(V=='history')list()}
+const txRow=x=>`<div class=row onclick="go('add',{type:'${x.type}',id:'${x.id}'})"><div class=ic>${EMO[x.cat]||'🏷️'}</div><div class=f><b>${esc(x.title)}</b><small>${esc(x.cat)}${x.note?' · '+esc(x.note):''}<br>${x.date} ${x.time}</small></div><b class="${x.type=='income'?'g':'r'}">${x.type=='income'?'+':'−'}${fmt(x.amt)}</b></div>`;
+function alerts(){const o=[],sp=sum(S.tx.filter(x=>x.type=='expense'&&x.date.startsWith(today().slice(0,7))));
+if(S.budget.total>0){const p=sp/S.budget.total*100;if(p>=100)o.push('⚠️ Monthly budget exceeded ('+p.toFixed(0)+'%)');else if(p>=80)o.push('⚠️ '+p.toFixed(0)+'% of monthly budget used')}
+S.loans.forEach(l=>{const r=rem(l);if(st(l)=='Overdue')o.push('⏰ Overdue: '+esc(l.name)+' · '+fmt(r));else if(r>0&&l.due&&l.due<=dstr(3))o.push('📅 Due soon: '+esc(l.name)+' · '+l.due)});
+return o.map(x=>`<div class=warn>${x}</div>`).join('')}
+VIEWS.home=()=>{const I=inc(),E=exp(),mn=new Date().toLocaleString(S.lang=='bn'?'bn-BD':'en',{month:'long',year:'numeric'});
+return `<small>${mn}</small><h2>Hello${S.name?', '+esc(S.name):''} 👋</h2>
+<div class="card hero"><small>${t('bal')}</small><h1>${fmt(I-E)}</h1><div class=two><div>↓ ${t('inc')}<b>${fmt(I)}</b></div><div>↑ ${t('exp')}<b>${fmt(E)}</b></div></div></div>${alerts()}
+<div class=three><button onclick="go('add',{type:'expense'})"><span>💸</span>${t('exp')}</button><button onclick="go('add',{type:'income'})"><span>💰</span>${t('inc')}</button><button onclick="go('loans')"><span>🤝</span>${t('loan')}</button></div>
+<div class=card><div class=sp><b>${t('recent')}</b><a href="#" onclick="go('history');return false" style="color:var(--p)">${t('all')}</a></div>
+${S.tx.slice().sort((a,b)=>(b.date+b.time).localeCompare(a.date+a.time)).slice(0,6).map(txRow).join('')||'<p><small>No transactions yet. Tap + to add your first one.</small></p>'}</div>`};
+VIEWS.add=()=>{const e=F.id?S.tx.find(x=>x.id==F.id):null,ty=F.type,d=e||{amt:'',cat:'',title:'',note:'',date:today(),time:nowT()};
+return `<h2>${e?'Edit':'New'} transaction</h2><div class=tabs>${['expense','income','loan'].map(k=>`<button class="${ty==k?'on':''}" ${e?'disabled':''} onclick="go('add',{type:'${k}'})">${t(k=='loan'?'loan':k=='income'?'inc':'exp')}</button>`).join('')}</div>
+<div class=card><label>Amount (${CUR[S.cur]})<input id=a type=number inputmode=decimal min=0 step=0.01 value="${d.amt}"></label>
+${ty=='loan'?`<label>Type<select id=k><option value=lent>I lent money</option><option value=borrowed>I borrowed money</option></select></label><label>Person’s name<input id=n></label><label>Due date (optional)<input id=du type=date></label>`:`<label>Category<select id=c>${cats(ty).map(c=>`<option ${c==d.cat?'selected':''}>${esc(c)}</option>`).join('')}</select></label><label>Title<input id=ti value="${esc(d.title)}"></label>`}
+<label>Note<input id=no value="${esc(d.note||'')}"></label><div class=two><label>Date<input id=d type=date value="${d.date}"></label><label>Time<input id=tm type=time value="${d.time}"></label></div>
+<button class=btn id=sv onclick=saveTx()>Save</button>${e?'<button class="btn del" onclick="del2(this,delTx)">Delete</button>':''}<p id=er class=r></p></div>`};
+function saveTx(){const ty=F.type,g=i=>($('#'+i)||{}).value?.trim()||'',amt=+g('a'),date=g('d'),time=g('tm')||'00:00',er=m=>{$('#er').textContent=m};
+if(!(amt>0)||amt>1e12)return er('Enter a valid amount greater than 0.');if(!date)return er('Choose a date.');
+if(ty=='loan'){const n=g('n'),du=g('du');if(!n)return er('Enter the person’s name.');if(du&&du<date)return er('Due date cannot be before the loan date.');
+S.loans.push({id:uid(),kind:g('k'),name:n,amt,date,due:du,note:g('no'),pays:[]});save();return go('loans')}
+const ti=g('ti');if(!ti)return er('Enter a title.');const o={type:ty,amt,cat:g('c'),title:ti,note:g('no'),date,time};
+$('#sv').disabled=true;if(F.id)Object.assign(S.tx.find(x=>x.id==F.id),o);else S.tx.push({id:uid(),...o});save();go('home')}
+function del2(b,fn){if(b.dataset.s)return fn();b.dataset.s=1;b.textContent='Tap again to confirm'}
+function delTx(){S.tx=S.tx.filter(x=>x.id!=F.id);save();go('home')}
+VIEWS.history=()=>`<h2>History</h2><div class=card><input placeholder="Search…" oninput="H.q=this.value;list()"><div class=two><select onchange="H.type=this.value;list()"><option value="">All types</option><option value=income>Income</option><option value=expense>Expense</option><option value=loan>Loan</option></select><select onchange="H.cat=this.value;list()"><option value="">All categories</option>${[...new Set(cats('expense').concat(cats('income')))].map(c=>`<option>${esc(c)}</option>`).join('')}</select></div><div class=two><input type=date onchange="H.date=this.value;list()"><select onchange="H.sort=this.value;list()"><option value=new>Newest first</option><option value=old>Oldest first</option></select></div></div><div class=card id=hl></div>`;
+function list(){const q=H.q.toLowerCase();let a=S.tx.map(x=>({...x,ts:x.date+x.time})).concat(H.cat?[]:S.loans.map(l=>({k:'loan',type:'loan',id:l.id,amt:l.amt,date:l.date,ts:l.date+'99',title:(l.kind=='lent'?'Lent to ':'Borrowed from ')+l.name,note:l.note,cat:'Loan'})));
+a=a.filter(x=>(!H.type||x.type==H.type)&&(!H.cat||x.cat==H.cat)&&(!H.date||x.date==H.date)&&(!q||(x.title+' '+x.note).toLowerCase().includes(q)));
+a.sort((x,y)=>H.sort=='old'?x.ts.localeCompare(y.ts):y.ts.localeCompare(x.ts));let last='';
+$('#hl').innerHTML=a.map(x=>{const h=x.date!=last?`<div class=day>${x.date}</div>`:'';last=x.date;return h+(x.k=='loan'?`<div class=row onclick="go('loans')"><div class=ic>🤝</div><div class=f><b>${esc(x.title)}</b><small>Loan</small></div><b style="color:var(--b)">${fmt(x.amt)}</b></div>`:txRow(x))}).join('')||'<small>No matching transactions.</small>'}
+function range(){const n=new Date(),y=n.getFullYear(),m=n.getMonth(),f=x=>x.getFullYear()+'-'+pad(x.getMonth()+1)+'-'+pad(x.getDate());
+if(P=='week')return[dstr(-6),today()];if(P=='month')return[f(new Date(y,m,1)),f(new Date(y,m+1,0))];if(P=='year')return[y+'-01-01',y+'-12-31'];return[PF||'0000-01-01',PT||'9999-12-31']}
+VIEWS.stats=()=>{const[a,b]=range(),r=S.tx.filter(x=>x.date>=a&&x.date<=b),I=sum(r.filter(x=>x.type=='income')),E=sum(r.filter(x=>x.type=='expense')),bt=r.filter(x=>x.type==SK),by={};
+TOT=sum(bt);bt.forEach(x=>by[x.cat]=(by[x.cat]||0)+x.amt);ENT=Object.entries(by).sort((p,q)=>q[1]-p[1]);let off=0;
+const pie=ENT.map(([c,v],i)=>{const p=v/TOT*100,s=`<circle r="15.9155" cx="21" cy="21" fill="none" stroke="${COL[i%12]}" stroke-width="9" stroke-dasharray="${p} ${100-p}" stroke-dashoffset="${-off}" onclick="sel(${i})"/>`;off+=p;return s}).join('');
+const long=(new Date(b)-new Date(a))/864e5>62&&a>'0001',K=x=>long?x.date.slice(0,7):x.date,g={};r.filter(x=>x.type=='expense').forEach(x=>g[K(x)]=(g[K(x)]||0)+x.amt);
+const ks=Object.keys(g).sort(),mx=Math.max(1,...ks.map(k=>g[k])),mxi=Math.max(I,E,1);
+return `<h2>${t('stats')}</h2><div class=tabs>${['week','month','year','custom'].map(k=>`<button class="${P==k?'on':''}" onclick="P='${k}';render()">${k[0].toUpperCase()+k.slice(1)}</button>`).join('')}</div>
+${P=='custom'?`<div class=two><input type=date value="${PF}" onchange="PF=this.value;render()"><input type=date value="${PT}" onchange="PT=this.value;render()"></div><br>`:''}
+<div class=card><b>Income vs Expense</b>${[['Income',I,'var(--g)'],['Expense',E,'var(--r)']].map(([n,v,c])=>`<div class=sp><small>${n}</small><b>${fmt(v)}</b></div><div class=pb><i style="width:${v/mxi*100}%;background:${c}"></i></div>`).join('')}<small>Net: ${fmt(I-E)} · Saved ${I>0?Math.max(0,(I-E)/I*100).toFixed(0):0}% of income</small></div>
+<div class=card><b>${long?'Monthly':'Daily'} spending</b><div class=chart>${ks.map(k=>`<div class=bar onclick="$('#bl').textContent='${k}: '+fmt(${g[k]})"><i style="height:${g[k]/mx*88}%"></i><s>${k.slice(long?5:8)}</s></div>`).join('')||'<small>No expenses in this period.</small>'}</div><small id=bl>Tap a bar for details</small></div>
+<div class=card><div class=tabs><button class="${SK=='expense'?'on':''}" onclick="SK='expense';render()">Expenses</button><button class="${SK=='income'?'on':''}" onclick="SK='income';render()">Income</button></div>
+${TOT?`<svg class=pie viewBox="0 0 42 42">${pie}</svg><p id=sl style="text-align:center"><small>Tap a slice</small></p>`:'<small>No data in this period.</small>'}
+${ENT.map(([c,v],i)=>`<div class=row onclick="sel(${i})"><span class=dot style="background:${COL[i%12]}"></span><div class=f>${esc(c)}</div><small>${(v/TOT*100).toFixed(1)}%</small><b>${fmt(v)}</b></div>`).join('')}</div>`};
+function sel(i){$('#sl').textContent=ENT[i][0]+': '+fmt(ENT[i][1])+' ('+(ENT[i][1]/TOT*100).toFixed(1)+'%)'}
+VIEWS.budget=()=>{const sp=S.tx.filter(x=>x.type=='expense'&&x.date.startsWith(today().slice(0,7))),B=S.budget,by={};sp.forEach(x=>by[x.cat]=(by[x.cat]||0)+x.amt);
+const bar=(l,s,b)=>{const p=b>0?s/b*100:0,c=p>100?'var(--r)':p>=80?'var(--y)':'var(--g)';return `<div class=card><div class=sp><b>${l}</b><small>${fmt(s)} / ${fmt(b)}</small></div><div class=pb><i style="width:${Math.min(p,100)}%;background:${c}"></i></div><small>${p.toFixed(0)}% used · ${b>=s?fmt(b-s)+' remaining':fmt(s-b)+' over'}</small>${p>100?'<div class=warn>Over budget!</div>':p>=80?'<div class=warn>Approaching the limit</div>':''}</div>`};
+return `<h2>${t('budget')}</h2>${B.total>0?bar('Monthly budget',sum(sp),B.total):''}${Object.entries(B.cats).map(([c,v])=>bar((EMO[c]||'🏷️')+' '+esc(c),by[c]||0,v)).join('')}
+<div class=card><label>Monthly budget (${CUR[S.cur]})<input id=bt type=number min=0 value="${B.total||''}"></label><button class="btn sm" onclick="B1()">Set monthly budget</button></div>
+<div class=card><label>Category budget<select id=bc>${cats('expense').map(c=>`<option>${esc(c)}</option>`).join('')}</select></label><input id=bv type=number min=0 placeholder="Amount (0 removes)"><br><br><button class="btn sm" onclick="B2()">Set category budget</button></div>`};
+function B1(){const v=+$('#bt').value;S.budget.total=v>0?v:0;save();render()}
+function B2(){const v=+$('#bv').value,c=$('#bc').value;if(v>0)S.budget.cats[c]=v;else delete S.budget.cats[c];save();render()}
+VIEWS.loans=()=>{const o=S.loans.filter(l=>l.kind=='borrowed'),l2=S.loans.filter(l=>l.kind=='lent');
+return `<div class=hd><h2>${t('loan')}</h2><button class="btn sm" onclick="go('add',{type:'loan'})">+ New</button></div><div class="card two"><div><small>I owe</small><h2 class=r>${fmt(o.reduce((s,l)=>s+rem(l),0))}</h2></div><div><small>Owed to me</small><h2 class=g>${fmt(l2.reduce((s,l)=>s+rem(l),0))}</h2></div></div>
+<small>Loans are tracked separately and never counted as income or expense.</small><br><br>`+(S.loans.map(l=>`<div class=card><div class=sp><b>${l.kind=='lent'?'Lent to ':'Borrowed from '}${esc(l.name)}</b><span class=chip>${st(l)}</span></div><small>Loan ${fmt(l.amt)} · Paid ${fmt(paid(l))} · <b>Remaining ${fmt(rem(l))}</b><br>Date ${l.date}${l.due?' · Due '+l.due:''}</small>
+<div class=pb><i style="width:${paid(l)/l.amt*100}%;background:var(--g)"></i></div>${l.pays.map(p=>`<small>${p.date}: ${fmt(p.amt)} repaid<br></small>`).join('')}
+${rem(l)>0?`<div class=two><input id="p${l.id}" type=number min=0 placeholder="Repayment"><button class="btn sm" onclick="pay('${l.id}')">Record</button></div>`:''}<button class="btn del sm" onclick="del2(this,()=>{S.loans=S.loans.filter(x=>x.id!='${l.id}');save();render()})">Delete</button></div>`).join('')||'<small>No loans yet.</small>')};
+function pay(id){const l=S.loans.find(x=>x.id==id),v=+$('#p'+id).value;if(!(v>0)||v>rem(l)+1e-9)return alert2('Enter an amount between 0 and '+fmt(rem(l)));l.pays.push({amt:v,date:today()});save();render()}
+function alert2(m){const d=document.createElement('div');d.className='warn';d.textContent=m;$('#app').prepend(d);setTimeout(()=>d.remove(),3000)}
+let SS='';
+const SM=[['profile','👤','Profile','প্রোফাইল'],['language','🌐','Language','ভাষা'],['currency','💱','Currency','মুদ্রা'],['theme','🎨','Theme','থিম'],['cats','🏷️','Custom categories','নিজস্ব ক্যাটাগরি'],['data','💾','Backup & Restore','ব্যাকআপ ও রিস্টোর'],['export','📤','Export transactions','লেনদেন এক্সপোর্ট'],['about','ℹ️','About','অ্যাপ সম্পর্কে']];
+const sv=k=>({profile:S.name||'Not set',language:S.lang=='bn'?'বাংলা':'English',currency:S.cur+' ('+CUR[S.cur].trim()+')',theme:S.theme,cats:(S.cc.expense.length+S.cc.income.length)+' custom'})[k]||'';
+const opts=(a,cur,fn)=>a.map(([v,l])=>`<div class=row onclick="${fn}('${v}')"><div class=f>${l}</div><b style="color:var(--p)">${v==cur?'✓':''}</b></div>`).join('');
+function setS(k,v){S[k]=v;save();render()}
+const SUB={
+profile:()=>`<label>Name<input value="${esc(S.name)}" onchange="S.name=this.value;save()"></label>`,
+language:()=>opts([['en','English'],['bn','বাংলা']],S.lang,"setS.bind(0,'lang')"),
+currency:()=>`<small>Symbol only, no conversion: existing amounts keep their numbers.</small>`+opts(Object.keys(CUR).map(c=>[c,c+' · '+CUR[c].trim()]),S.cur,"setS.bind(0,'cur')"),
+theme:()=>opts([['auto','Auto (follow phone)'],['light','Light'],['dark','Dark']],S.theme,"setS.bind(0,'theme')"),
+cats:()=>`<div class=two><select id=ct><option>expense</option><option>income</option></select><input id=cn placeholder="Name"></div><br><button class="btn sm" onclick="addCat()">Add category</button>${['expense','income'].map(k=>S.cc[k].map((c,i)=>`<div class=row><div class=f>${esc(c)} <small>${k}</small></div><button class="btn del sm" onclick="S.cc.${k}.splice(${i},1);save();render()">✕</button></div>`).join('')).join('')}`,
+data:()=>`<small>Everything is saved on this device and works offline. Tap Backup, copy the text and keep it safe. To restore, paste it below.</small><textarea id=bk rows=6></textarea><br><br><div class=two><button class="btn sm" onclick="$('#bk').value=JSON.stringify(S);$('#bk').select()">Backup</button><button class="btn sm" onclick="restore()">Restore</button></div><p id=rs class=r></p><button class="btn del sm" onclick="del2(this,()=>{localStorage.removeItem('smm');location.reload()})">Erase all data</button>`,
+export:()=>`<small>Creates a CSV of all transactions. Copy it into a spreadsheet app.</small><textarea id=bk rows=8></textarea><br><br><button class="btn sm" onclick="csv()">Export CSV</button>`,
+about:()=>`<b>MoneyMate</b><p><small>Your data stays private on your device; nothing is uploaded.</small></p>`};
+VIEWS.settings=()=>{if(!SS)return `<h2>${t('settings')}</h2><div class=card>${SM.map(([k,i,e,b])=>`<div class=row onclick="SS='${k}';render()"><div class=ic>${i}</div><div class=f><b>${S.lang=='bn'?b:e}</b><small>${esc(sv(k))}</small></div><span class=chev>›</span></div>`).join('')}</div>`;
+const m=SM.find(x=>x[0]==SS);return `<div class=hd style="justify-content:flex-start;gap:10px;align-items:center"><button class=back onclick="SS='';render()">←</button><h2 style="margin:0">${S.lang=='bn'?m[3]:m[2]}</h2></div><br><div class=card>${SUB[SS]()}</div>`};
+function addCat(){const n=$('#cn').value.trim(),k=$('#ct').value;if(n&&!cats(k).includes(n)){S.cc[k].push(n);save();render()}}
+function csv(){const q=s=>'"'+String(s).replace(/"/g,'""')+'"';$('#bk').value='Date,Time,Type,Category,Title,Note,Amount\n'+S.tx.map(x=>[x.date,x.time,x.type,q(x.cat),q(x.title),q(x.note),x.amt].join(',')).join('\n');$('#bk').select()}
+function restore(){try{const d=JSON.parse($('#bk').value);if(!Array.isArray(d.tx)||!Array.isArray(d.loans))throw 0;S=Object.assign(S,d);save();render()}catch(e){$('#rs').textContent='That is not a valid backup.'}}
+render();
+</script></body></html>
